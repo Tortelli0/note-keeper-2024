@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,11 +7,13 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DetalhesCategoria, EdicaoCategoria } from '../models/categoria.model';
 import { CategoriaService } from '../services/categoria.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-edicao-categoria',
   standalone: true,
   imports: [
+    NgIf,
     RouterLink,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -29,8 +31,15 @@ export class EdicaoCategoriaComponent implements OnInit{
   constructor( private route: ActivatedRoute, private router: Router, private categoriaService: CategoriaService) {
 
     this.categoriaForm = new FormGroup({
-      titulo: new FormControl<string>(''),
+      titulo: new FormControl<string>('', [
+        Validators.required,
+        Validators.minLength(3),
+      ]),
     });
+  }
+
+  get titulo() {
+    return this.categoriaForm.get('titulo');
   }
 
   ngOnInit(): void {
@@ -46,6 +55,9 @@ export class EdicaoCategoriaComponent implements OnInit{
   }
 
   editar() {
+    if (this.categoriaForm.invalid) return;
+
+
     if (!this.id){
       console.error('Não foi possível recuperar o id requisitado.')
 
@@ -56,7 +68,7 @@ export class EdicaoCategoriaComponent implements OnInit{
 
     this.categoriaService.editar(this.id, categoriaEditada).subscribe((res) => {
       console.log(`O registro ID [${res.id}] foi editado com sucesso!`);
-      
+
       this.router.navigate(['/categorias']);
     });
   }
