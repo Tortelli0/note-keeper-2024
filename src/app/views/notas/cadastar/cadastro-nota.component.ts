@@ -32,11 +32,11 @@ import { CadastroNota } from '../models/nota.model';
     MatSelectModule,
     MatCardModule,
   ],
-  templateUrl: './cadastro-notas.component.html',
-  styleUrl: './cadastro-notas.component.scss'
+  templateUrl: './cadastro-nota.component.html',
+  styleUrl: './cadastro-nota.component.scss'
 })
 
-export class CadastroNotasComponent implements OnInit{
+export class CadastroNotaComponent implements OnInit{
   notaForm: FormGroup;
 
   categorias$?: Observable<ListagemCategoria[]>
@@ -54,7 +54,7 @@ export class CadastroNotasComponent implements OnInit{
   }
 
 
-  cadastrar() {
+  cadastrar(): void {
     const novaNota: CadastroNota = this.notaForm.value;
 
     this.notaService.cadastrar(novaNota).subscribe((res) => {
