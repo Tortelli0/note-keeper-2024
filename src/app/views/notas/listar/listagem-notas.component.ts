@@ -5,14 +5,27 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ListagemNota } from '../models/nota.model';
 import { NotaService } from '../services/nota.service';
+import { MatChipsModule } from '@angular/material/chips';
+import { CategoriaService } from '../../categorias/services/categoria.service';
+import { ListagemCategoria } from '../../categorias/models/categoria.model';
 
 @Component({
   selector: 'app-listagem-notas',
   standalone: true,
-  imports: [NgIf, NgForOf, RouterLink, MatCardModule, MatButtonModule, MatIconModule, MatTooltipModule, AsyncPipe],
+  imports: [
+    NgIf,
+    NgForOf,
+    RouterLink,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    AsyncPipe,
+    MatChipsModule,
+  ],
   templateUrl: './listagem-notas.component.html',
   styleUrl: './listagem-notas.component.scss'
 })
@@ -20,11 +33,35 @@ import { NotaService } from '../services/nota.service';
 export class ListagemNotasComponent implements OnInit{
   notas$?: Observable<ListagemNota[]>
 
-  constructor(private notaService: NotaService) {
+  categorias$?: Observable<ListagemCategoria[]>
 
+  notasEmCache: ListagemNota[];
+
+  constructor(private notaService: NotaService, private categoriaService: CategoriaService) {
+    this.notasEmCache = [];
   }
 
   ngOnInit(): void {
-    this.notas$ = this.notaService.selecionarTodos();
+    this.categorias$ = this.categoriaService.selecionarTodos();
+
+    this.notaService.selecionarTodos().subscribe((notas) => {
+      this.notasEmCache = notas;
+
+      this.notas$ = of(notas);
+    });
+  }
+
+  filtrar(categoriaId?: number) {
+    const notasFiltradas = this.obterNotasFiltradas(this.notasEmCache, categoriaId);
+
+    this.notas$ = of(notasFiltradas);
+  }
+
+  private obterNotasFiltradas(notas: ListagemNota[], categoriaId?: number) {
+    if (categoriaId) {
+      return notas.filter((n) => n.categoriaId == categoriaId);
+    }
+
+    return notas;
   }
 }
