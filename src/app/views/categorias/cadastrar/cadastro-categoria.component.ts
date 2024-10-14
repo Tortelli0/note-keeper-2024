@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CategoriaService } from '../services/categoria.service';
 import { CadastroCategoria } from '../models/categoria.model';
 import { NgIf } from '@angular/common';
+import { NotificacaoService } from '../../../core/notificacao/notificacao.service';
 
 @Component({
   selector: 'app-cadastrar-categoria',
@@ -27,8 +28,7 @@ import { NgIf } from '@angular/common';
 export class CadastrarCategoriaComponent {
   categoriaForm: FormGroup;
 
-  // Validators
-  constructor( private router: Router, private categoriaService: CategoriaService) {
+  constructor( private router: Router, private categoriaService: CategoriaService, private notificacao: NotificacaoService) {
 
     this.categoriaForm = new FormGroup({
       titulo: new FormControl<string>('', [
@@ -38,12 +38,10 @@ export class CadastrarCategoriaComponent {
     });
   }
 
-  // getters
   get titulo() {
     return this.categoriaForm.get('titulo');
   }
 
-  // setters
 
   cadastrar() {
     if (this.categoriaForm.invalid) return;
@@ -51,7 +49,7 @@ export class CadastrarCategoriaComponent {
     const novaCategoria: CadastroCategoria = this.categoriaForm.value;
 
     this.categoriaService.cadastrar(novaCategoria).subscribe((res) => {
-      console.log(`O registro ID [${res.id}] foi cadastrado com sucesso!`);
+      this.notificacao.sucesso(`O registro ID [${res.id}] foi cadastrado com sucesso!`);
 
       this.router.navigate(['/categorias']);
     });

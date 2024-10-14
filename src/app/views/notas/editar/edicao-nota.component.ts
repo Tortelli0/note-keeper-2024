@@ -13,6 +13,7 @@ import { ListagemCategoria } from '../../categorias/models/categoria.model';
 import { CategoriaService } from '../../categorias/services/categoria.service';
 import { CadastroNota, DetalhesNota } from '../models/nota.model';
 import { NotaService } from '../services/nota.service';
+import { NotificacaoService } from '../../../core/notificacao/notificacao.service';
 
 @Component({
   selector: 'app-edicao-nota',
@@ -41,7 +42,13 @@ export class EdicaoNotaComponent implements OnInit {
 
   categorias$?: Observable<ListagemCategoria[]>
 
-  constructor (private route: ActivatedRoute ,private router: Router, private notaService: NotaService, private categoriaService: CategoriaService) {
+  constructor (
+    private route: ActivatedRoute,
+    private router: Router,
+    private notaService: NotaService,
+    private categoriaService: CategoriaService,
+    private notificacao: NotificacaoService
+  ) {
     this.notaForm = new FormGroup({
       titulo: new FormControl<string>(''),
       conteudo: new FormControl<string>(''),
@@ -53,7 +60,7 @@ export class EdicaoNotaComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
 
     if (!this.id){
-      console.error('Não foi possível recuperar o id requisitado.')
+      this.notificacao.erro('Não foi possível recuperar o id requisitado.')
 
       return;
     }
@@ -66,7 +73,7 @@ export class EdicaoNotaComponent implements OnInit {
 
   editar(): void {
     if (!this.id){
-      console.error('Não foi possível recuperar o id requisitado.')
+      this.notificacao.erro('Não foi possível recuperar o id requisitado.')
 
       return;
     }
@@ -74,7 +81,7 @@ export class EdicaoNotaComponent implements OnInit {
     const notaEditada: CadastroNota = this.notaForm.value;
 
     this.notaService.editar(this.id!, notaEditada).subscribe((res) => {
-      console.log(`O registro ID [${res.id}] foi editado com sucesso!`);
+      this.notificacao.sucesso(`O registro ID [${res.id}] foi editado com sucesso!`);
 
       this.router.navigate(['/notas']);
     });
@@ -105,5 +112,4 @@ export class EdicaoNotaComponent implements OnInit {
       controle?.markAsDirty();
     }
   }
-
 }
