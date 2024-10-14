@@ -126,6 +126,13 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "https://Tortelli0.github.io/note-keeper-2024/",
+            "repo": "https://github.com/Tortelli0/note-keeper-2024.git"
+          }
         }
       }
     }
