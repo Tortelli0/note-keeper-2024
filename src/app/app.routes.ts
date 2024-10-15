@@ -5,6 +5,7 @@ import { CadastrarCategoriaComponent } from './views/categorias/cadastrar/cadast
 import { EdicaoCategoriaComponent } from './views/categorias/editar/edicao-categoria.component';
 import { ExclusaoCategoriaComponent } from './views/categorias/excluir/exclusao-categoria.component';
 import { notasRoutes } from './views/notas/notas.routes';
+import { ListagemNotasArquivadasComponent } from './views/notas/arquivar/listagem-notas-arquivadas.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},

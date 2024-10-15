@@ -58,6 +58,8 @@ export class CadastroNotaComponent implements OnInit{
   cadastrar(): void {
     const novaNota: CadastroNota = this.notaForm.value;
 
+    novaNota.arquivado = false;
+
     this.notaService.cadastrar(novaNota).subscribe((res) => {
       this.notificacao.sucesso(`O registro ID [${res.id}] foi cadastrado com sucesso!`);
 

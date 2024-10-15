@@ -1,20 +1,20 @@
-import { NgForOf, AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { NotificacaoService } from '../../../core/notificacao/notificacao.service';
+import { NgIf, NgForOf, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { ListagemCategoria } from '../../categorias/models/categoria.model';
+import { CategoriaService } from '../../categorias/services/categoria.service';
 import { ListagemNota } from '../models/nota.model';
 import { NotaService } from '../services/nota.service';
-import { MatChipsModule } from '@angular/material/chips';
-import { CategoriaService } from '../../categorias/services/categoria.service';
-import { ListagemCategoria } from '../../categorias/models/categoria.model';
-import { NotificacaoService } from '../../../core/notificacao/notificacao.service';
 
 @Component({
-  selector: 'app-listagem-notas',
+  selector: 'app-listagem-notas-arquivadas',
   standalone: true,
   imports: [
     NgIf,
@@ -27,11 +27,12 @@ import { NotificacaoService } from '../../../core/notificacao/notificacao.servic
     AsyncPipe,
     MatChipsModule,
   ],
-  templateUrl: './listagem-notas.component.html',
-  styleUrl: './listagem-notas.component.scss'
+  templateUrl: './listagem-notas-arquivadas.component.html',
+  styleUrl: './listagem-notas-arquivadas.component.scss'
 })
 
-export class ListagemNotasComponent implements OnInit{
+export class ListagemNotasArquivadasComponent implements OnInit {
+
   notas$?: Observable<ListagemNota[]>
 
   categorias$?: Observable<ListagemCategoria[]>
@@ -66,13 +67,13 @@ export class ListagemNotasComponent implements OnInit{
     return notas;
   }
 
-  arquivar(nota: ListagemNota) {
+  desarquivar(nota: ListagemNota) {
 
-    nota.arquivado = true;
+    nota.arquivado = false;
 
     this.notaService.editar(nota.id, nota).subscribe((res) => {
       this.notificacao.sucesso(
-        `O registro ID [${res.id}] foi arquivado com sucesso!`
+        `O registro ID [${res.id}] foi desarquivado com sucesso!`
       );
     });
   }
